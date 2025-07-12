@@ -1,129 +1,123 @@
-# 📊 Amazon E-Commerce Product Review Sentiment Analysis 
 
-This project performs **Sentiment Analysis** on Amazon product reviews using Python libraries like **TextBlob**, **Pandas**, **Seaborn**, and **SQLAlchemy**, and stores the results in a **MySQL** database. The sentiment distribution is then visualized using **Seaborn and Matplotlib**.
+## 📊 **Amazon E-Commerce Product Review Sentiment Analysis**
 
----
-
-## 📁 Dataset
-
-The dataset used is a CSV file named `Amazon.csv`, containing customer reviews of various products from Amazon. The important columns extracted are:
-
-- `name`: Product name  
-- `brand`: Product brand  
-- `primaryCategories`: Category of the product  
-- `reviews.date`: Review date  
-- `reviews.text`: Text content of the review  
+This section gives a **brief overview of the project**, stating what the project is about. It introduces the reader to the **core objective** — using sentiment analysis on product reviews from Amazon to classify them into **positive, negative, or neutral** using Python and storing the results in MySQL. Visualizations are used to make the insights more comprehensible.
 
 ---
 
-## 🎯 Project Objectives
+## 📁 **Dataset**
 
-- Clean and preprocess product reviews.
-- Perform sentiment classification using TextBlob.
-- Store cleaned and processed data in a MySQL database.
-- Visualize sentiment distribution.
+This section outlines the **data source and the relevant features** extracted from it. It specifies that the dataset is a CSV file containing Amazon product reviews and lists the most significant columns:
 
----
-
-## 🛠 Tech Stack
-
-- **Programming Language**: Python
-- **Libraries**:
-  - `pandas` – for data manipulation  
-  - `textblob` – for sentiment analysis  
-  - `seaborn`, `matplotlib` – for data visualization  
-  - `sqlalchemy`, `pymysql` – for MySQL integration  
-- **Database**: MySQL
+* **name** – the product's name
+* **brand** – the product’s brand
+* **primaryCategories** – the category the product belongs to
+* **reviews.date** – the date when the review was posted
+* **reviews.text** – the textual content of the customer review
 
 ---
 
-## 🔍 Step-by-Step Breakdown
+## 🎯 **Project Objectives**
 
-### 1. Import Libraries
+Here, the **goals** of the project are broken down:
 
-```python
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from textblob import TextBlob
-from textblob.en import polarity
-from sqlalchemy import create_engine
-```
-### 2. Load and Filter Dataset
-```python
-df = pd.read_csv("./Amazon.csv")
-df1 = df[['name', 'brand', 'primaryCategories', 'reviews.date', 'reviews.text']]
-df1 = df1.drop_duplicates()
-df1 = df1.dropna(subset=["reviews.text"])
-```
+* Clean and prepare the raw review data.
+* Use **TextBlob** to analyze the sentiment in the review text.
+* Store the resulting data (including sentiment labels) in a **MySQL database**.
+* Visualize the distribution of sentiments (positive/neutral/negative) using **Seaborn and Matplotlib**.
 
-### 3. Text Cleaning and Date Formatting
+---
 
-```python
-df1.loc[:,'reviews_text'] = df1["reviews.text"].str.replace(r'[^A-Za-z0-9]', '', regex=True)
-df1.loc[:,"review_date"] = pd.to_datetime(df1['reviews.date'], format='mixed', errors='coerce').dt.date
-```
-### 4. Define Sentiment Function
-```python
-def sentiment(text):
-    polarity = TextBlob(text).sentiment.polarity
-    if polarity > 0:
-        return 'positive'
-    elif polarity < 0:
-        return 'negative'
-    else:
-        return 'Neutral'
+## 🛠 **Tech Stack**
 
-df1['sentiment'] = df1['reviews_text'].apply(sentiment)
-```
-### 5. Drop Unused Columns
-```python
-df1.drop(['reviews.text', 'reviews.date'], axis=1, inplace=True)
-```
-### 6. MySQL Integration
-```python
-engine = create_engine('mysql+pymysql://root:root@localhost/Amazon_reviews')
-# df1.to_sql('reviews', con=engine, if_exists='replace', index=False)
-```
+This part lists the **technologies and libraries** used:
 
-### 7. Visualization
-```python
-a = sns.countplot(data=df1, x="sentiment")
-for i in ax.containers:
-     a.bar_label(i)
-plt.title("Sentiment Distribution")
-plt.show()
-```
+* **Python** – Programming language.
+* **pandas** – To handle data cleaning and manipulation.
+* **TextBlob** – For natural language processing and sentiment analysis.
+* **Seaborn & Matplotlib** – For data visualization.
+* **SQLAlchemy & PyMySQL** – For connecting and inserting data into the MySQL database.
+* **MySQL** – Database to store the cleaned and processed review data.
 
-### 8. Output Visualization 
+---
+
+## 🔍 **Step-by-Step Breakdown**
+
+Each of these steps walks through the **actual implementation**:
+
+### 1. **Import Libraries**
+
+Essential libraries are imported for data handling, sentiment analysis, and database connection.
+
+### 2. **Load and Filter Dataset**
+
+* The CSV file is read.
+* Only the relevant columns are retained.
+* Duplicate rows are dropped.
+* Null review texts are removed to avoid analysis errors.
+
+### 3. **Text Cleaning and Date Formatting**
+
+* **Non-alphanumeric characters** are removed from the reviews.
+* Dates are parsed into a proper datetime format for consistency and future analysis.
+
+### 4. **Define Sentiment Function**
+
+* A custom function uses **TextBlob's polarity score**:
+
+  * > 0: Positive sentiment
+  * < 0: Negative sentiment
+  * \== 0: Neutral sentiment
+* This function is applied to the review texts to assign sentiment labels.
+
+### 5. **Drop Unused Columns**
+
+After extracting the useful data and generating the sentiment, the original columns (`reviews.text` and `reviews.date`) are removed for clarity and to reduce redundancy.
+
+### 6. **MySQL Integration**
+
+* A SQLAlchemy engine is created to connect to a local MySQL database.
+* The `to_sql()` function (commented out for now) can be used to **upload the cleaned DataFrame** into the database table named `reviews`.
+
+### 7. **Visualization**
+
+* A **count plot** is created using Seaborn to show the distribution of sentiment labels.
+* Labels are added on top of each bar.
+* A plot title is given for clarity.
+
+### 8. **Output Visualization**
+
+* A final plot appears showing the count of positive, negative, and neutral reviews.
+* This helps quickly understand **customer sentiment trends**.
 <img width="640" height="480" alt="fig" src="https://github.com/user-attachments/assets/0d8ed4a9-8f31-4acd-8cad-06f7424d9c86" />
+---
 
+## 🚀 **How to Run**
 
-## 🚀 How to Run
+Instructions on **setting up and running** the project locally:
 
-### 1. Install Dependencies
-````python
-pip install pandas seaborn matplotlib textblob sqlalchemy pymysql
-````
-### 2.Add Dataset
-Place your Amazon.csv file inside the project directory.
+1. Install required Python libraries using pip.
+2. Place the dataset (`Amazon.csv`) in the working directory.
+3. Ensure that a local MySQL instance is running and a database named `Amazon_reviews` exists.
 
-### ✅ Prerequisites
-Python 3.7+
+---
 
-MySQL running locally with a database named Amazon_reviews
+## ✅ **Prerequisites**
 
-Dataset named Amazon.csv in the same directory
+Specifies what is **required before running** the project:
 
-### ✅ Conclusion
-This project demonstrates how sentiment analysis can be effectively used to extract insights from e-commerce product reviews. By combining natural language processing with data visualization and SQL-based storage:
+* Python version 3.7 or above.
+* MySQL installed and running.
+* Dataset file available in the same directory as the script.
 
-We've cleaned and transformed raw review data.
+---
 
-Applied TextBlob polarity scoring to classify reviews as positive, negative, or neutral.
+## ✅ **Conclusion**
 
-Stored the processed data into a MySQL database for further analysis or integration.
+Summarizes what was accomplished in the project:
 
-Visualized the overall sentiment distribution to identify customer satisfaction trends.
-
-This pipeline can be extended to larger datasets or integrated into dashboards to help businesses make data-driven decisions based on customer feedback.
+* Raw reviews were cleaned and transformed.
+* Sentiment analysis was performed using TextBlob.
+* The results were stored in a structured format in MySQL.
+* Sentiment distribution was visualized.
+* Notes how this workflow can be **scaled** or integrated into **dashboards** to extract business insights from customer feedback.
