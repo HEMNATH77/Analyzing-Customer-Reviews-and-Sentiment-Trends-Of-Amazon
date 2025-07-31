@@ -90,7 +90,6 @@ After extracting the useful data and generating the sentiment, the original colu
 * A final plot appears showing the count of positive, negative, and neutral reviews.
 * This helps quickly understand **customer sentiment trends**.
 <img width="640" height="480" alt="fig" src="https://github.com/user-attachments/assets/0d8ed4a9-8f31-4acd-8cad-06f7424d9c86" />
----
 
 ## 🚀 **How to Run**
 
